@@ -1,18 +1,20 @@
 const db = require('../config/db');
 
 class Order {
-    static async createOrder(user_id, totalAmount) {
+    static async createOrder(userId, totalAmount) {
         const [result] = await db.execute(
-            'INSERT INTO orders (user_id, total_amount) VALUES (?,?,?)',
-            [user_id, totalAmount, 'Pending']
+            'INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, ?)',
+            [userId, totalAmount, 'Pending']
         );
         return result.insertId;
     }
 
-    static async createOrderItem (oderId,productId, quantity, priceAtPurchase) {
+    static async createOrderItem(orderId, productId, quantity, priceAtPurchase) {
         await db.execute(
             'INSERT INTO order_items (order_id, product_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)',
-            [oderId, productId, quantity, priceAtPurchase]
+            [orderId, productId, quantity, priceAtPurchase]
         );
-    }       
+    }
 }
+
+module.exports = Order;

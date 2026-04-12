@@ -19,3 +19,5 @@ class Product {
         return result.insertId;
     }
 }
+
+module.exports = Product;
