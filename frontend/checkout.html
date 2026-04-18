@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Essential Hub</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="index.html">SHOP<span style="color:var(--text-muted)">DARK</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Shop</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+</nav>
+<main class="container">
+  <h1 class="page-title">Checkout</h1>
+
+  <!-- Success Screen (hidden initially) -->
+  <div id="success-screen" class="success-screen" style="display:none">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title">Order Confirmed!</h2>
+    <p class="success-sub" id="success-msg">Your payment was processed and your order has been placed.</p>
+    <div id="receipt" class="card" style="max-width:400px;margin:0 auto 2rem;text-align:left"></div>
+    <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+  </div>
+
+  <!-- Checkout Form -->
+  <div id="checkout-form-wrap" class="checkout-layout">
+    <!-- Left: Order Review -->
+    <div>
+      <h3 style="font-size:1rem;color:var(--text-secondary);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:.06em">Order Review</h3>
+      <div class="card" style="margin-bottom:1.5rem">
+        <div id="checkout-items"></div>
+        <div class="order-summary-total" style="margin-top:1rem">
+          <span>Total</span>
+          <span id="checkout-total">$0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Payment -->
+    <div class="payment-card">
+      <h3 style="font-size:1rem;color:var(--text-secondary);margin-bottom:1.2rem;text-transform:uppercase;letter-spacing:.06em">Payment Details</h3>
+
+      <!-- Card Visual -->
+      <div class="credit-card-visual">
+        <div class="cc-chip"></div>
+        <div class="cc-number" id="cc-visual-number">•••• •••• •••• ••••</div>
+        <div class="cc-bottom">
+          <div>
+            <div class="cc-label">Card Holder</div>
+            <div class="cc-value" id="cc-visual-name">Full Name</div>
+          </div>
+          <div>
+            <div class="cc-label">Expires</div>
+            <div class="cc-value" id="cc-visual-expiry">MM / YY</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-error" id="checkout-error"></div>
+
+      <form id="payment-form">
+        <div class="form-group">
+          <label class="form-label">Card Number</label>
+          <input id="cc-number" class="form-input" type="text" placeholder="1234 5678 9012 3456"
+                 maxlength="19" autocomplete="cc-number" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cardholder Name</label>
+          <input id="cc-name" class="form-input" type="text" placeholder="John Doe" required/>
+        </div>
+        <div class="card-row">
+          <div class="form-group">
+            <label class="form-label">Expiry</label>
+            <input id="cc-expiry" class="form-input" type="text" placeholder="MM / YY" maxlength="7" required/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CVV</label>
+            <input id="cc-cvv" class="form-input" type="text" placeholder="•••" maxlength="4" required/>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" id="pay-btn">
+          Pay <span id="pay-amount">$0.00</span>
+        </button>
+        <p style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-top:.8rem">
+          🔒 Simulated payment — no real charges
+        </p>
+      </form>
+    </div>
+  </div>
+</main>
+<script src="js/api.js"></script>
+<script src="js/pages/checkout.js"></script>
+</body>
+</html>

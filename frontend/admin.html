@@ -1,30 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart - E-Shop</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Essential Hub — Admin</title>
+  <link rel="stylesheet" href="css/styles.css"/>
 </head>
-
 <body>
-    <header>
-        <nav>
-            <a href="index.html" class="brand">E-Shop</a>
-            <ul>
-                <li><a href="index.html">Shop</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main class="container">
-        <h1>Your Cart</h1>
-        <div class="cart-empty">
-            <p>Your cart is currently empty. Browse the shop and add a few items to get started.</p>
-        </div>
-    </main>
-</body>
+<nav>
+  <a class="nav-brand" href="index.html">ESSENTIALS<span style="color:var(--text-muted)">HUB</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Store</a></li>
+    <li><a href="admin.html" class="active">Admin</a></li>
+    <li><a href="#" id="nav-logout">Logout</a></li>
+  </ul> 
+</nav>
 
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;padding:0 14px;margin-bottom:12px">Dashboard</div>
+    <div class="sidebar-nav">
+      <button class="sidebar-nav-item active" data-panel="overview">Overview</button>
+      <button class="sidebar-nav-item" data-panel="products">Products</button>
+      <button class="sidebar-nav-item" data-panel="orders">Orders</button>
+      <button class="sidebar-nav-item" data-panel="users">Users</button>
+    </div>
+  </aside>
+
+  <div class="admin-content">
+    <!-- Overview -->
+    <div id="panel-overview" class="admin-panel active">
+      <h2 style="margin-bottom:1.5rem">Overview</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-value" id="stat-products">—</div><div class="stat-label">Products</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-orders">—</div><div class="stat-label">Orders</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-users">—</div><div class="stat-label">Users</div></div>
+        <div class="stat-card"><div class="stat-value" id="stat-revenue">—</div><div class="stat-label">Revenue</div></div>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div id="panel-products" class="admin-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h2>Products</h2>
+        <button class="btn btn-primary btn-sm" id="add-product-btn">+ Add Product</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Orders -->
+    <div id="panel-orders" class="admin-panel">
+      <h2 style="margin-bottom:1.5rem">Orders</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th><th>Update</th></tr></thead>
+          <tbody id="orders-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Users -->
+    <div id="panel-users" class="admin-panel">
+      <h2 style="margin-bottom:1.5rem">Users</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Product Modal -->
+<div class="modal-overlay" id="product-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Add Product</span>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div class="alert alert-error" id="product-form-error"></div>
+    <form id="product-form" enctype="multipart/form-data">
+      <input type="hidden" id="product-id"/>
+      <div class="form-group"><label class="form-label">Name</label><input id="p-name" class="form-input" required/></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea id="p-desc" class="form-input" rows="3" style="resize:vertical"></textarea></div>
+  
+      <div class="card-row">
+        <div class="form-group"><label class="form-label">Price ($)</label><input id="p-price" type="number" step="0.01" class="form-input" required/></div>
+        <div class="form-group"><label class="form-label">Stock</label><input id="p-stock" type="number" class="form-input" required/></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="p-category" class="form-input" style="background: var(--card-bg); color: var(--text-main); border: 1px solid var(--border-color); width: 100%; padding: 10px; border-radius: 6px;">
+            <option value="Electronics">Electronics</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Home">Home & Living</option>
+            <option value="Gadgets">Gadgets</option>
+            <option value="Accessories">Accessories</option>
+        </select>
+      </div>
+
+      <div class="form-group"><label class="form-label">Image</label><input id="p-image" type="file" accept="image/*" class="form-input" style="padding:8px"/></div>
+      <button type="submit" class="btn btn-primary btn-full">Save Product</button>
+    </form>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/pages/admin.js"></script>
+</body>
 </html>

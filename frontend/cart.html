@@ -1,30 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart - E-Shop</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Essential Hub</title>
+  <link rel="stylesheet" href="css/styles.css"/>
 </head>
-
 <body>
-    <header>
-        <nav>
-            <a href="index.html" class="brand">E-Shop</a>
-            <ul>
-                <li><a href="index.html">Shop</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main class="container">
-        <h1>Your Cart</h1>
-        <div class="cart-empty">
-            <p>Your cart is currently empty. Browse the shop and add a few items to get started.</p>
-        </div>
-    </main>
-</body>
+<nav>
+    <a class="nav-brand" href="index.html">ESSENTIALS<span style="color:var(--text-muted)">HUB</span></a>
+    
+    <div class="nav-links">
+        <a href="index.html">Store</a>
+        <a href="cart.html" class="active">Cart <span class="cart-badge" id="nav-cart-count">0</span></a>
+        
+        <a href="profile.html">Profile</a>
+        <a href="login.html" id="nav-auth-link">Login</a>
 
+        <div id="nav-admin-wrap" style="display:none;">
+            <a href="admin.html">Admin</a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+  <h1 class="page-title">Your Cart</h1>
+  <div id="empty-cart" class="empty-state" style="display:none">
+    <div class="empty-state-icon">🛒</div>
+    <div class="empty-state-title">Your cart is empty</div>
+    <p style="color:var(--text-muted);margin:8px 0 1.5rem">Add some products to get started</p>
+    <a href="index.html" class="btn btn-primary">Browse Products</a>
+  </div>
+  <div id="cart-content" class="cart-layout" style="display:none">
+    <div class="card">
+      <div id="cart-items"></div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <h3 style="font-size:1rem;margin-bottom:1rem;color:var(--text-secondary)">ORDER SUMMARY</h3>
+        <div id="summary-items"></div>
+        <div class="order-summary-total">
+          <span>Total</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+        <button id="checkout-btn" class="btn btn-primary btn-full" style="margin-top:1.2rem">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
+<script src="js/api.js"></script>
+<script src="js/pages/cart.js"></script>
+</body>
 </html>
