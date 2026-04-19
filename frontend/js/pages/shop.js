@@ -6,7 +6,7 @@ function updateNav() {
   const countEl   = document.getElementById('nav-cart-count');
   const authEl    = document.getElementById('nav-auth-link');
   const adminEl   = document.getElementById('nav-admin-wrap');
-  const profileEl = document.getElementById('nav-profile-wrap'); // <--- Added this
+  const profileEl = document.getElementById('nav-profile-wrap'); 
 
   const rawCart = localStorage.getItem('cart');
   const cart = (rawCart && rawCart !== "undefined") ? JSON.parse(rawCart) : [];
@@ -46,8 +46,22 @@ function updateNav() {
 function addToCart(product) {
   const cart = JSON.parse(localStorage.getItem('cart') || '[]');
   const existing = cart.find(i => i.id === product.id);
-  if (existing) existing.quantity++;
-  else cart.push({ ...product, quantity: 1 });
+
+  // 🛡️ STOCK CHECK
+  const currentQtyInCart = existing ? existing.quantity : 0;
+  
+  if (currentQtyInCart + 1 > product.stock) {
+    showToast(`❌ Cannot add more. Only ${product.stock} available!`);
+    return; // 🛑 Stops the function here so it doesn't add to cart
+  }
+
+  // If we pass the check, proceed as usual
+  if (existing) {
+    existing.quantity++;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
+
   localStorage.setItem('cart', JSON.stringify(cart));
   updateNav();
   showToast(`"${product.name}" added to cart`);

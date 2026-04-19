@@ -12,25 +12,44 @@ exports.checkout = async (req, res) => {
     if (!payment || !payment.cardNumber)
       return res.status(400).json({ error: 'Payment information is required.' });
 
+    
+    for (const item of items) {
+      const product = await Product.getById(item.id);
+
+      if (!product) {
+        return res.status(404).json({ error: `Product "${item.name}" not found.` });
+      }
+
+      if (product.stock < item.quantity) {
+        
+        return res.status(400).json({ 
+          error: `Insufficient stock for ${product.name}. Only ${product.stock} left in store!` 
+        });
+      }
+    }
+
+
     const orderId = await Order.createOrder(userId, total_amount);
 
+   
     for (const item of items) {
       await Order.createOrderItem(orderId, item.id, item.quantity, item.price);
       await Product.decrementStock(item.id, item.quantity);
     }
 
     return res.status(201).json({
-      message:          'Order placed successfully.',
+      message: 'Order placed successfully.',
       orderId,
       simulatedPayment: {
-        status:        'approved',
+        status: 'approved',
         transactionId: `TXN-${Date.now()}`,
-        last4:          String(payment.cardNumber).replace(/\s/g, '').slice(-4),
-        amount:         total_amount,
+        last4: String(payment.cardNumber).replace(/\s/g, '').slice(-4),
+        amount: total_amount,
       },
     });
+
   } catch (err) {
-    console.error('Checkout:', err);
+    console.error('Checkout Error:', err);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
