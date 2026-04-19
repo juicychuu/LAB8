@@ -32,9 +32,13 @@ exports.login = async (req, res) => {
     const ok = await bcrypt.compare(password, user.password_hash);
     if (!ok)  return res.status(401).json({ error: 'Invalid credentials.' });
 
-    const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    // 🛡️ THE CRITICAL CHANGE: 
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role }, 
+      process.env.JWT_SECRET, 
+      { expiresIn: '1d' }
+    );
 
-    // ... keep the res.cookie line above this ...
     res.cookie('token', token, {
       httpOnly: true,
       secure:   process.env.NODE_ENV === 'production',
@@ -42,16 +46,15 @@ exports.login = async (req, res) => {
       maxAge:   24 * 60 * 60 * 1000,
     });
 
-    // CHANGE THIS PART: Add token to the object below
     return res.json({
       message: 'Logged in successfully.',
-      token: token, // <--- ADD THIS LINE
+      token: token, 
       user: { 
         id: user.id, 
         username: user.username, 
         email: user.email, 
         role: user.role,
-        profile_pic: user.profile_pic // Make sure this is here too!
+        profile_pic: user.profile_pic 
       },
     });
   } catch (err) {

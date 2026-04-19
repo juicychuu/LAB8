@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-  // 1. Try to get token from Cookie OR from Authorization Header
+  
   let token = req.cookies.token;
 
   if (!token && req.headers.authorization) {
-    // If it's in the header, it looks like "Bearer <token>", so we split it
+   
     token = req.headers.authorization.split(' ')[1];
   }
 

@@ -67,7 +67,7 @@ exports.getAllOrders = async (_req, res) => {
     const orders = await Order.getAllOrders();
     return res.json(orders);
   } catch (err) {
-    // Keep this log! It's the only way to see if your SQL query breaks later.
+    
     console.error('Admin Orders Error:', err); 
     return res.status(500).json({ error: 'Internal server error.' });
   }

@@ -20,7 +20,7 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    // 1. Add 'category' to the destructuring
+    
     const { name, description, price, stock, category } = req.body; 
     
     if (!name || !price)
@@ -28,7 +28,7 @@ exports.createProduct = async (req, res) => {
 
     const imageUrl  = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // 2. Add 'category' as the last argument here
+    
     const productId = await Product.create(
       name, description, parseFloat(price), parseInt(stock) || 0, imageUrl, category
     );
@@ -42,11 +42,11 @@ exports.createProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    // 1. Add 'category' here
+    
     const { name, description, price, stock, category } = req.body;
     const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
-    // 2. Add 'category' as the second to last argument (matching your model order)
+    
     const affected = await Product.update(
       req.params.id, name, description,
       parseFloat(price), parseInt(stock) || 0, imageUrl, category

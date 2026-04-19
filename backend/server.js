@@ -2,6 +2,8 @@ const express      = require('express');
 const cors         = require('cors');
 const cookieParser = require('cookie-parser');
 const path         = require('path');
+const db           = require('./config/db'); 
+const bcrypt       = require('bcryptjs');     
 require('dotenv').config({ path: __dirname + '/.env' });
 
 const app = express();
@@ -15,9 +17,36 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// --- AUTO-CREATE ROOT ADMIN ---
+const setupAdmin = async () => {
+    const rootEmail = 'Admin@gmail.com';
+    const rootPass = '@dmin123';
+    
+    try {
+        
+        const [rows] = await db.query("SELECT * FROM users WHERE email = ?", [rootEmail]);
+        
+        if (rows.length === 0) {
+            const hash = await bcrypt.hash(rootPass, 10);
+            await db.query(
+                "INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)",
+                ['SystemRoot', rootEmail, hash, 'admin']
+            );
+            console.log('🛡️  Root Admin created automatically: Admin@gmail.com');
+        } else {
+            console.log('✅ Root Admin verified.');
+        }
+    } catch (err) {
+       
+        console.log('ℹ️  Note: Root Admin check skipped (Table may not exist yet).');
+    }
+};
+
+
+setupAdmin();
+
 // --- STATIC FOLDERS ---
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// ADD THIS LINE BELOW:
 app.use('/avatar', express.static(path.join(__dirname, 'avatar'))); 
 
 // Routes

@@ -10,7 +10,7 @@ class Product {
     return rows[0];
   }
   static async create(name, description, price, stock, imageUrl = null, category) {
-    // 👇 Added 'category' to the columns and the VALUES (?)
+    
     const [r] = await db.execute(
       'INSERT INTO products (name, description, price, stock, image_url, category) VALUES (?,?,?,?,?,?)',
       [name, description, price, stock, imageUrl, category]);
@@ -18,7 +18,7 @@ class Product {
   }
 
   static async update(id, name, description, price, stock, imageUrl, category) {
-    // 👇 Added category=? to the SET list
+   
     const [r] = await db.execute(
       `UPDATE products
           SET name=?, description=?, price=?, stock=?, category=?,

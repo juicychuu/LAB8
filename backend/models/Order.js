@@ -4,7 +4,7 @@ class Order {
   static async createOrder(userId, totalAmount) {
   const [r] = await db.execute(
     'INSERT INTO orders (user_id, total_amount, status) VALUES (?,?,?)', 
-    [userId, totalAmount, 'delivered'] // This forces it to delivered
+    [userId, totalAmount, 'delivered'] 
   );
   return r.insertId;
 }
@@ -25,7 +25,7 @@ class Order {
     return rows;
   }
   static async getAllOrders() {
-    // This version works on older MySQL versions and still gets the username
+    
     const [rows] = await db.execute(
       `SELECT o.id, o.total_amount, o.status, o.created_at,
               u.username, u.email
