@@ -11,7 +11,7 @@ document.querySelectorAll('.sidebar-nav-item').forEach(btn => {
     btn.classList.add('active');
     document.getElementById(`panel-${btn.dataset.panel}`).classList.add('active');
     
-    // Add this line to make sure it refreshes whenever you click Overview
+    
     if (btn.dataset.panel === 'overview') loadOverview(); 
     
     if (btn.dataset.panel === 'products') loadProducts();
@@ -69,7 +69,6 @@ function openEditModal(product) {
   document.getElementById('p-price').value       = product.price;
   document.getElementById('p-stock').value       = product.stock;
 
-  // 👇 ADD THIS LINE:
   document.getElementById('p-category').value    = product.category || 'Electronics';
 
   document.getElementById('product-modal').classList.add('open');
@@ -95,7 +94,7 @@ document.getElementById('product-form').addEventListener('submit', async e => {
   formData.append('price',       document.getElementById('p-price').value);
   formData.append('stock',       document.getElementById('p-stock').value);
   
-  // 👇 GRAB THE CATEGORY VALUE
+
   formData.append('category',    document.getElementById('p-category').value);
 
   const imgFile = document.getElementById('p-image').files[0];
@@ -151,27 +150,89 @@ async function updateStatus(id, status) {
 async function loadUsers() {
   const users = await api.request('/api/users');
   const tbody = document.getElementById('users-tbody');
+  
+  // 🔑 THE MASTER KEY
+  const ROOT_ADMIN = 'Admin@gmail.com';
+  
+  // Get the current logged-in user from localStorage
+  const currentUser = JSON.parse(localStorage.getItem('user'));
+  const isRoot = (currentUser.email === ROOT_ADMIN); 
+
   tbody.innerHTML = '';
+  
   users.forEach(u => {
+    const isTargetRoot = (u.email === ROOT_ADMIN);
+    const isMe = (u.email === currentUser.email);
+    
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${u.id}</td>
       <td>${u.username}</td>
       <td>${u.email}</td>
-      <td><span class="status-badge ${u.role==='admin'?'status-processing':'status-pending'}">${u.role}</span></td>
+      <td>
+        ${(!isRoot || isTargetRoot || isMe) 
+          ? `<span class="status-badge status-processing">${u.role}</span>` 
+          : `<select class="role-select" onchange="updateUserRole(${u.id}, this.value, event)">
+              <option value="user" ${u.role === 'user' ? 'selected' : ''}>User</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+             </select>`
+        }
+      </td>
       <td>${new Date(u.created_at).toLocaleDateString()}</td>
-      <td>${u.id !== user.id
-        ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Delete</button>`
-        : '<span style="color:var(--text-muted);font-size:.8rem">You</span>'
-      }</td>`;
+      <td>
+        ${(isRoot && !isMe && !isTargetRoot)
+          ? `<button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">Delete</button>`
+          : `<span style="color:var(--text-muted); font-size:.8rem">${isTargetRoot ? 'ROOT' : 'LOCKED'}</span>`
+        }
+      </td>`;
     tbody.appendChild(tr);
   });
 }
 
 async function deleteUser(id) {
-  if (!confirm('Delete this user?')) return;
-  await api.request(`/api/users/${id}`, 'DELETE');
-  loadUsers();
+ 
+  const users = await api.request('/api/users');
+  const targetUser = users.find(u => u.id === id);
+  const ROOT_ADMIN = 'Admin@gmail.com';
+
+ 
+  if (targetUser && targetUser.email === ROOT_ADMIN) {
+    alert("CRITICAL: The Master Admin cannot be deleted.");
+    return;
+  }
+
+  
+  if (!confirm('Are you sure you want to delete this user?')) return;
+  
+  try {
+    await api.request(`/api/users/${id}`, 'DELETE');
+    loadUsers();
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
+
+async function updateUserRole(id, role) {
+  try {
+    if (!confirm(`Are you sure you want to change this user's role to ${role.toUpperCase()}?`)) {
+      loadUsers();
+      return;
+    }
+
+   
+    await api.request(`/api/users/${id}/role`, 'PATCH', { role });
+    
+   
+    if (typeof showToast === 'function') {
+      showToast(`User role updated to ${role}`);
+    }
+    
+    loadUsers(); 
+  } catch (err) {
+    console.error(err);
+    alert('Failed to update role: ' + err.message);
+    loadUsers();
+  }
 }
 
 // ── Init ──────────────────────────────────────────────────────

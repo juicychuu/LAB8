@@ -21,10 +21,10 @@ document.getElementById('login-form').addEventListener('submit', async e => {
       password: document.getElementById('login-password').value,
     });
 
-    // --- ADD THESE LOGS TO SEE THE TRUTH ---
+    
     console.log("FULL BACKEND DATA:", data); 
     
-    // This will try all common names for a token
+   
     const actualToken = data.token || data.accessToken || data.jwt || data.tokenString;
     console.log("TOKEN FOUND:", actualToken);
 

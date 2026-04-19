@@ -10,21 +10,31 @@
 
 <nav>
   <a class="nav-brand" href="index.html">ESSENTIALS<span style="color:var(--text-muted)">HUB</span></a>
+
+  <div class="search-wrapper">
+    <input type="text" id="product-search" placeholder="Search products..." autocomplete="off">
+  </div>
+
   <ul class="nav-links">
     <li><a href="index.html" class="active">Shop</a></li>
     <li><a href="cart.html">Cart <span class="cart-badge" id="nav-cart-count">0</span></a></li>
-    
     <li id="nav-profile-wrap" style="display:none"><a href="profile.html">Profile</a></li>
-    
     <li><a href="login.html" id="nav-auth-link">Login</a></li>
     <li id="nav-admin-wrap" style="display:none"><a href="admin.html">Admin</a></li>
   </ul>
 </nav>
 
+<div id="search-overlay"></div>
+
 <main class="container">
   <h1 class="page-title">Our Products</h1>
-  <div id="loading" class="loading-wrap"><div class="spinner"></div></div>
+  
+  <div id="loading" class="loading-wrap">
+    <div class="spinner"></div>
+  </div>
+  
   <div id="product-grid" class="product-grid" style="display:none"></div>
+  
   <div id="empty" class="empty-state" style="display:none">
     <div class="empty-state-icon">🛍️</div>
     <div class="empty-state-title">No products yet</div>

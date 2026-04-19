@@ -536,10 +536,10 @@ tr:hover td { background: var(--bg-hover); }
   display: flex;
   gap: 20px;
   overflow-x: auto;
-  padding: 10px 4px 20px 4px; /* Bottom padding for shadow/scroll spacing */
+  padding: 10px 4px 20px 4px; 
   scroll-behavior: smooth;
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: var(--border) transparent; /* Firefox */
+  scrollbar-width: thin; 
+  scrollbar-color: var(--border) transparent; 
   -webkit-overflow-scrolling: touch;
 }
 
@@ -560,18 +560,18 @@ tr:hover td { background: var(--bg-hover); }
 
 /* Ensure cards stay a fixed size and don't shrink */
 .horizontal-scroll-row .product-card {
-  flex: 0 0 280px; /* Fixed width for each card in the row */
+  flex: 0 0 280px; 
   max-width: 280px;
 }
 
-/* Optional: Slight fade on the edges to show more items are available */
+
 .category-section {
   position: relative;
 }
 
 
 
-/* Profile Picture Styles */
+
 .profile-avatar-section {
     display: flex;
     flex-direction: column;
@@ -620,4 +620,143 @@ tr:hover td { background: var(--bg-hover); }
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: 0.5rem;
+}
+
+
+
+/* 1. THE SEARCH BAR (The VIP) */
+.search-wrapper {
+  flex: 1;
+  max-width: 450px;
+  margin: 0 30px;
+  position: relative;
+  z-index: 2000; 
+}
+
+#product-search {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 1px solid #444;
+  background: #1a1a1a; 
+  color: #ffffff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+#product-search:focus {
+  border-color: #fff;
+  background: #222;
+}
+
+/* 2. THE BLUR CURTAIN */
+#search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8); 
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000; 
+}
+
+body.searching #search-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* 3. THE CLEAR RESULTS */
+#product-grid, 
+#empty {
+  position: relative;
+  z-index: 1500;
+}
+
+/* 4. THE BACKGROUND BLUR (Safely blurs the content behind) */
+body.searching .page-title {
+  filter: blur(8px);
+  opacity: 0.1;
+  transition: all 0.3s;
+}
+
+/* 5. FIX FOR THE NAV (Ensures links don't blur) */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 2000; 
+  background: #000; 
+}
+
+
+
+
+/* ── Role Switcher Dropdown ── */
+.role-select {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.role-select:focus {
+  border-color: var(--border-focus);
+}
+
+
+.role-select option {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+
+.role-select[data-role="admin"] {
+  color: #64b5f6;
+  border-color: rgba(100, 181, 246, 0.4);
+}
+
+
+.role-select[data-role="user"] {
+  color: var(--warning);
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+
+/* ── Role Switcher Dropdown ── */
+.role-select {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition);
+}
+
+.role-select:focus {
+  border-color: var(--border-focus);
+}
+
+/* Color coding for Admin vs User */
+.role-select[data-role="admin"] {
+  color: #64b5f6;
+  border-color: rgba(100, 181, 246, 0.4);
+}
+
+.role-select[data-role="user"] {
+  color: var(--warning);
+  border-color: rgba(255, 152, 0, 0.4);
 }

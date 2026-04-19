@@ -24,10 +24,10 @@ async function initProfile() {
     const previewImg = document.getElementById('profile-img-preview');
     
     if (user.profile_pic) {
-        // Option A: Use the uploaded photo from backend
+        
         previewImg.src = `http://localhost:5000/${user.profile_pic}`;
     } else {
-        // Option B: Explicitly set a placeholder if no pic exists to avoid 404
+       
         previewImg.src = `https://ui-avatars.com/api/?name=${user.username}&background=333&color=fff`;
     }
 
@@ -68,7 +68,7 @@ async function initProfile() {
                     user.profile_pic = data.profile_pic;
                     localStorage.setItem('user', JSON.stringify(user));
                     
-                    // Optional: Force the preview to the new permanent URL
+                   
                     previewImg.src = `http://localhost:5000/${data.profile_pic}`;
                 } else {
                     alert(data.message || 'Upload failed');
@@ -84,7 +84,7 @@ async function initProfile() {
     document.getElementById('nav-logout').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.removeItem('user');
-        localStorage.removeItem('token'); // Don't forget to clear the token!
+        localStorage.removeItem('token');
         window.location.href = 'login.html';
     });
 

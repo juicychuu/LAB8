@@ -25,18 +25,18 @@ function updateNav() {
         console.error("Logout error:", err);
       }
       localStorage.removeItem('user');
-      localStorage.removeItem('token'); // Clear token too!
+      localStorage.removeItem('token');
       location.href = 'index.html';
     };
   }
 
-  // 2. NEW: Handle Admin Link Visibility
+ 
   const adminWrap = document.getElementById('nav-admin-wrap');
   if (adminWrap) {
     adminWrap.style.display = (user && user.role === 'admin') ? 'block' : 'none';
   }
 
-  // 3. NEW: Ensure Profile link is visible if logged in
+
   const profileLink = document.querySelector('a[href="profile.html"]');
   if (profileLink) {
     profileLink.style.display = user ? 'block' : 'none';

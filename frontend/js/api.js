@@ -4,7 +4,7 @@ const api = {
   async request(endpoint, method = 'GET', body = null) {
     const config = {
       method,
-      credentials: 'include', // send cookies
+      credentials: 'include', 
       headers: {},
     };
     if (body && !(body instanceof FormData)) {
