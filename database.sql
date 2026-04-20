@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 20, 2026 at 10:44 PM
+-- Generation Time: Apr 21, 2026 at 12:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,20 @@ SET time_zone = "+00:00";
 --
 -- Database: `ecommerce_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cart_items`
+--
+
+CREATE TABLE `cart_items` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -58,7 +72,18 @@ INSERT INTO `orders` (`id`, `user_id`, `total_amount`, `status`, `created_at`) V
 (21, 3, 4242.00, 'delivered', '2026-04-19 12:20:32'),
 (22, 6, 3000.00, 'delivered', '2026-04-19 13:13:39'),
 (23, 3, 64824.00, 'delivered', '2026-04-19 14:19:40'),
-(24, 3, 97236.00, 'delivered', '2026-04-20 18:50:56');
+(24, 3, 97236.00, 'delivered', '2026-04-20 18:50:56'),
+(25, 3, 97236.00, 'delivered', '2026-04-20 21:25:45'),
+(26, 3, 97236.00, 'delivered', '2026-04-20 21:26:32'),
+(27, 9, 64824.00, 'delivered', '2026-04-20 21:39:02'),
+(28, 9, 64824.00, 'delivered', '2026-04-20 21:42:08'),
+(29, 9, 64824.00, 'delivered', '2026-04-20 21:43:00'),
+(30, 9, 64824.00, 'delivered', '2026-04-20 21:50:34'),
+(31, 3, 22222.00, 'delivered', '2026-04-20 21:51:03'),
+(32, 9, 64824.00, 'delivered', '2026-04-20 21:51:55'),
+(33, 3, 151870.00, 'delivered', '2026-04-20 21:52:35'),
+(34, 9, 97236.00, 'delivered', '2026-04-20 21:58:20'),
+(35, 3, 37777.00, 'delivered', '2026-04-20 21:58:52');
 
 -- --------------------------------------------------------
 
@@ -98,7 +123,20 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (38, 21, 14, 4, 1000.00),
 (39, 22, 14, 3, 1000.00),
 (40, 23, 17, 2, 32412.00),
-(41, 24, 17, 3, 32412.00);
+(41, 24, 17, 3, 32412.00),
+(42, 25, 3, 3, 32412.00),
+(43, 26, 3, 3, 32412.00),
+(44, 27, 17, 2, 32412.00),
+(45, 28, 17, 2, 32412.00),
+(46, 29, 17, 2, 32412.00),
+(47, 30, 17, 2, 32412.00),
+(48, 31, 19, 2, 11111.00),
+(49, 32, 17, 2, 32412.00),
+(50, 33, 19, 2, 11111.00),
+(51, 33, 17, 4, 32412.00),
+(52, 34, 17, 3, 32412.00),
+(53, 35, 19, 3, 11111.00),
+(54, 35, 18, 2, 2222.00);
 
 -- --------------------------------------------------------
 
@@ -126,13 +164,13 @@ CREATE TABLE `products` (
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `image_url`, `created_at`, `category`, `rating`, `num_reviews`) VALUES
 (1, '8K Monitor', 'Ultra-sharp 8K display, 240Hz refresh rate.', 1200.00, 2, NULL, '2026-04-15 14:14:02', 'Uncategorized', 0.00, 0),
 (2, 'Mechanical Keyboard', 'RGB mechanical keyboard, Cherry MX switches.', 150.00, 27, NULL, '2026-04-15 14:14:02', 'Uncategorized', 0.00, 0),
-(3, 'Wireless Mouse', 'Ergonomic 4000 DPI wireless mouse.', 75.00, 24, NULL, '2026-04-15 14:14:02', 'Uncategorized', 0.00, 0),
+(3, 'Wireless Mouse', 'Ergonomic 4000 DPI wireless mouse.', 75.00, 18, NULL, '2026-04-15 14:14:02', 'Uncategorized', 0.00, 0),
 (14, 'chair', 'sturdy', 1000.00, 49, NULL, '2026-04-19 11:22:34', 'Home', 1.00, 1),
 (15, 'chain', 'long', 11.00, 0, NULL, '2026-04-19 12:13:50', 'Accessories', 3.00, 3),
 (16, 'table', 'brown', 11111.00, 21, '/uploads/1776601302006-user-2-belmont-dining-table-1-63847041505.webp', '2026-04-19 12:21:42', 'Home', 3.00, 1),
-(17, 'Laptop', 'high end', 32412.00, 17, '/uploads/1776608353965-user-9-download.jpg', '2026-04-19 14:19:13', 'Electronics', 2.75, 4),
-(18, 'laptop', '', 2222.00, 22, NULL, '2026-04-20 20:38:19', 'Electronics', 4.00, 1),
-(19, 'Laptop rizen', 'gaming', 11111.00, 11, NULL, '2026-04-20 20:38:52', 'Electronics', 0.00, 0);
+(17, 'Laptop', 'high end', 32412.00, 0, '/uploads/1776608353965-user-9-download.jpg', '2026-04-19 14:19:13', 'Electronics', 2.75, 4),
+(18, 'laptop', '', 2222.00, 20, NULL, '2026-04-20 20:38:19', 'Electronics', 4.00, 1),
+(19, 'Laptop rizen', 'gaming', 11111.00, 4, NULL, '2026-04-20 20:38:52', 'Electronics', 0.00, 0);
 
 -- --------------------------------------------------------
 
@@ -198,6 +236,14 @@ INSERT INTO `users` (`id`, `username`, `email`, `profile_pic`, `password_hash`, 
 --
 
 --
+-- Indexes for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
@@ -238,16 +284,22 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -270,6 +322,13 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `cart_items`
+--
+ALTER TABLE `cart_items`
+  ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `orders`
