@@ -760,3 +760,111 @@ nav {
   color: var(--warning);
   border-color: rgba(255, 152, 0, 0.4);
 }
+
+
+
+/* Review Modal Overlay */
+.review-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Modal Box */
+.review-modal-content {
+    background: #1a1a1a;
+    color: #f0f0f0;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 550px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.review-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    border: none;
+    background: none;
+    color: #888;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+/* Review List Styling */
+.reviews-wrapper {
+    background: #111;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.review-item {
+    border-bottom: 1px solid #222;
+    padding: 12px 0;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Form Styling */
+.review-form-group {
+    margin-bottom: 15px;
+}
+
+.review-form-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.review-input {
+    width: 100%;
+    padding: 10px;
+    background: #222;
+    border: 1px solid #333;
+    color: #fff;
+    border-radius: 6px;
+    outline: none;
+}
+
+.review-input:focus {
+    border-color: #555;
+}
+
+.review-submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.review-submit-btn:hover {
+    background: #ddd;
+}

@@ -33,8 +33,14 @@ exports.login = async (req, res) => {
     if (!ok)  return res.status(401).json({ error: 'Invalid credentials.' });
 
     // 🛡️ THE CRITICAL CHANGE: 
+    // 🛡️ THE CRITICAL CHANGE (FIXED): 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role }, 
+      { 
+        id: user.id, 
+        username: user.username, // <--- ADD THIS LINE HERE
+        email: user.email, 
+        role: user.role 
+      }, 
       process.env.JWT_SECRET, 
       { expiresIn: '1d' }
     );
