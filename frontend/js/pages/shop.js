@@ -3,15 +3,12 @@ let ALL_PRODUCTS = [];
 function updateNav() {
   const rawUser = localStorage.getItem('user');
   const user = (rawUser && rawUser !== "undefined") ? JSON.parse(rawUser) : null;
-  const countEl = document.getElementById('nav-cart-count');
+  
   const authEl = document.getElementById('nav-auth-link');
   const adminEl = document.getElementById('nav-admin-wrap');
   const profileEl = document.getElementById('nav-profile-wrap'); 
 
-  const rawCart = localStorage.getItem('cart');
-  const cart = (rawCart && rawCart !== "undefined") ? JSON.parse(rawCart) : [];
-
-  if (countEl) countEl.textContent = cart.reduce((s, i) => s + i.quantity, 0);
+  updateCartCount();
 
   if (user) {
     if (authEl) { 
@@ -20,12 +17,7 @@ function updateNav() {
       authEl.onclick = async (e) => { 
         e.preventDefault();
         await api.request('/api/auth/logout', 'POST'); 
-        
-        // --- THE FIX ---
         localStorage.removeItem('user'); 
-        localStorage.removeItem('cart'); // This clears the items when you log out
-        // ----------------
-        
         location.reload(); 
       }; 
     }
@@ -42,25 +34,72 @@ function updateNav() {
   }
 }
 
-function addToCart(product) {
-  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-  const existing = cart.find(i => i.id === product.id);
-  const currentQtyInCart = existing ? existing.quantity : 0;
-  
-  if (currentQtyInCart + 1 > product.stock) {
-    showToast(`❌ Cannot add more. Only ${product.stock} available!`);
+async function addToCart(productId) {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    // Force both to be Numbers to avoid "Not Found" errors
+    const targetId = Number(productId);
+    
+    if (!user) {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        // Use Number() here for the find
+        const existingItem = cart.find(item => Number(item.id) === targetId);
+        
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            // Use Number() here for the find
+            const product = ALL_PRODUCTS.find(p => Number(p.id) === targetId);
+            
+            if (!product) {
+                console.error("Product Search Failed. Target:", targetId, "Available:", ALL_PRODUCTS);
+                showToast("❌ Product details not found.");
+                return;
+            }
+            cart.push({ ...product, quantity: 1 });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showToast("🛒 Item added to guest cart!");
+        updateCartCount();
+        return;
+    }
+
+    try {
+        await api.request('/api/cart', 'POST', { 
+            productId: targetId, // Use the cleaned number
+            quantity: 1 
+        });
+
+        showToast("✨ Item added to your account!");
+        updateCartCount(); 
+    } catch (err) {
+        console.error("Cart Error:", err);
+        showToast("❌ Out of stock or error adding item.");
+    }
+}
+
+async function updateCartCount() {
+  const countEl = document.getElementById('nav-cart-count');
+  if (!countEl) return;
+
+  const rawUser = localStorage.getItem('user');
+  const user = (rawUser && rawUser !== "undefined") ? JSON.parse(rawUser) : null;
+
+  if (!user) {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    countEl.textContent = totalItems;
     return;
   }
 
-  if (existing) {
-    existing.quantity++;
-  } else {
-    cart.push({ ...product, quantity: 1 });
+  try {
+    const cartItems = await api.request('/api/cart');
+    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    countEl.textContent = totalItems;
+  } catch (err) {
+    console.error("Failed to sync cart count:", err);
+    countEl.textContent = '0';
   }
-
-  localStorage.setItem('cart', JSON.stringify(cart));
-  updateNav();
-  showToast(`"${product.name}" added to cart`);
 }
 
 function showToast(msg) {
@@ -163,7 +202,7 @@ function renderProducts(products) {
       
       card.querySelector('.add-btn').onclick = (e) => {
         e.stopPropagation();
-        addToCart(p);
+        addToCart(p.id); 
       };
 
       card.onclick = () => openReviewModal(p);
@@ -240,7 +279,6 @@ async function openReviewModal(product) {
       </div>
     `;
 
-    // --- LOGIC FOR CLOSING AND SUBMITTING (Same as before) ---
     document.body.appendChild(overlay);
     document.body.style.overflow = 'hidden';
     document.getElementById('close-modal-btn').onclick = () => { overlay.remove(); document.body.style.overflow = 'auto'; };

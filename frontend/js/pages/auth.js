@@ -21,19 +21,30 @@ document.getElementById('login-form').addEventListener('submit', async e => {
       password: document.getElementById('login-password').value,
     });
 
-    
-    console.log("FULL BACKEND DATA:", data); 
-    
-   
     const actualToken = data.token || data.accessToken || data.jwt || data.tokenString;
-    console.log("TOKEN FOUND:", actualToken);
-
+    
     localStorage.setItem('user', JSON.stringify(data.user));
 
     if (actualToken) {
         localStorage.setItem('token', actualToken);
     } else {
         alert("The server didn't send a token! Check the console.");
+        return;
+    }
+
+    const guestCart = JSON.parse(localStorage.getItem('cart') || '[]');
+    if (guestCart.length > 0) {
+      for (const item of guestCart) {
+        try {
+          await api.request('/api/cart', 'POST', { 
+            productId: item.id, 
+            quantity: item.quantity 
+          });
+        } catch (mergeErr) {
+          console.error("Failed to merge item:", item.name, mergeErr);
+        }
+      }
+      localStorage.removeItem('cart');
     }
 
     window.location.href = data.user.role === 'admin' ? 'admin.html' : 'index.html';

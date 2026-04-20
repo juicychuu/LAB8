@@ -1,24 +1,53 @@
-function getCart() { return JSON.parse(localStorage.getItem('cart') || '[]'); }
-
 // ── Redirect if not logged in ────────────────────────────────
 const user = JSON.parse(localStorage.getItem('user') || 'null');
 if (!user) { window.location.href = 'login.html'; }
 
-// ── Render order items ───────────────────────────────────────
-const cart  = getCart();
-const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+let CURRENT_CART = [];
+let TOTAL_AMOUNT = 0;
 
-if (!cart.length) { window.location.href = 'cart.html'; }
+// ── Initialize Checkout ──────────────────────────────────────
+async function initCheckout() {
+  try {
+    // 1. Fetch cart from DATABASE
+    CURRENT_CART = await api.request('/api/cart');
 
-const itemsEl = document.getElementById('checkout-items');
-cart.forEach(item => {
-  const row = document.createElement('div');
-  row.className = 'order-summary-row';
-  row.innerHTML = `<span>${item.name} × ${item.quantity}</span><span>$${(item.price*item.quantity).toFixed(2)}</span>`;
-  itemsEl.appendChild(row);
-});
-document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
-document.getElementById('pay-amount').textContent = `$${total.toFixed(2)}`;
+    // 2. Redirect if database cart is empty
+    if (!CURRENT_CART || CURRENT_CART.length === 0) {
+      window.location.href = 'cart.html';
+      return;
+    }
+
+    // 3. Calculate and Render
+    renderOrderReview();
+  } catch (err) {
+    console.error("Checkout Load Error:", err);
+    window.location.href = 'cart.html';
+  }
+}
+
+// Add this helper inside checkout.js or just use the logic below
+function renderOrderReview() {
+  const itemsEl = document.getElementById('checkout-items');
+  itemsEl.innerHTML = '';
+  TOTAL_AMOUNT = 0;
+
+  CURRENT_CART.forEach(item => {
+    // FIX: Look for product_id (DB) OR id (Guest/Local)
+    const pId = item.product_id || item.id; 
+    const sub = item.price * item.quantity;
+    TOTAL_AMOUNT += sub;
+
+    const row = document.createElement('div');
+    row.className = 'order-summary-row';
+    // Add the ID as a data attribute just in case you need to reference it
+    row.setAttribute('data-product-id', pId); 
+    row.innerHTML = `<span>${item.name} × ${item.quantity}</span><span>$${sub.toFixed(2)}</span>`;
+    itemsEl.appendChild(row);
+  });
+
+  document.getElementById('checkout-total').textContent = `$${TOTAL_AMOUNT.toFixed(2)}`;
+  document.getElementById('pay-amount').textContent = `$${TOTAL_AMOUNT.toFixed(2)}`;
+}
 
 // ── Card visual live update ──────────────────────────────────
 const ccNum    = document.getElementById('cc-number');
@@ -31,9 +60,11 @@ ccNum.addEventListener('input', () => {
   const parts = v.padEnd(16,'•').match(/.{4}/g);
   document.getElementById('cc-visual-number').textContent = parts.join(' ');
 });
+
 ccName.addEventListener('input', () => {
   document.getElementById('cc-visual-name').textContent = ccName.value || 'Full Name';
 });
+
 ccExpiry.addEventListener('input', () => {
   let v = ccExpiry.value.replace(/\D/g,'');
   if (v.length >= 2) v = v.substring(0,2) + ' / ' + v.substring(2,4);
@@ -52,8 +83,14 @@ document.getElementById('payment-form').addEventListener('submit', async e => {
 
   try {
     const result = await api.request('/api/orders/checkout', 'POST', {
-      items:        cart,
-      total_amount: total,
+      // We transform the items so the backend sees 'id'
+      items: CURRENT_CART.map(item => ({
+        id: item.product_id || item.id, 
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      })),
+      total_amount: TOTAL_AMOUNT,
       payment: {
         cardNumber: ccNum.value.replace(/\s/g,''),
         cardName:   ccName.value,
@@ -61,24 +98,36 @@ document.getElementById('payment-form').addEventListener('submit', async e => {
       },
     });
 
+    await api.request('/api/cart', 'DELETE');
+
+    // Clear the guest cart just in case, though the backend 
+    // should handle clearing the database cart.
     localStorage.removeItem('cart');
 
     // Show success
     document.getElementById('checkout-form-wrap').style.display = 'none';
     const ss = document.getElementById('success-screen');
     ss.style.display = 'block';
+    
+    // Check if result has the expected simulated payment info
+    const txId = result.simulatedPayment?.transactionId || 'N/A';
+    const last4 = result.simulatedPayment?.last4 || '****';
+
     document.getElementById('success-msg').textContent =
-      `Payment approved. Transaction ID: ${result.simulatedPayment.transactionId} | Card: •••• ${result.simulatedPayment.last4}`;
+      `Payment approved. Transaction ID: ${txId} | Card: •••• ${last4}`;
 
     const receiptEl = document.getElementById('receipt');
     receiptEl.innerHTML = `
       <p style="font-size:.8rem;color:var(--text-secondary);margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.06em">Receipt</p>
-      ${cart.map(i => `<div class="order-summary-row"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
-      <div class="order-summary-total"><span>Total Paid</span><span>$${total.toFixed(2)}</span></div>`;
+      ${CURRENT_CART.map(i => `<div class="order-summary-row"><span>${i.name} × ${i.quantity}</span><span>$${(i.price*i.quantity).toFixed(2)}</span></div>`).join('')}
+      <div class="order-summary-total"><span>Total Paid</span><span>$${TOTAL_AMOUNT.toFixed(2)}</span></div>`;
   } catch (err) {
     errEl.textContent = err.message;
     errEl.classList.add('show');
     btn.disabled = false;
-    btn.innerHTML = `Pay $${total.toFixed(2)}`;
+    btn.innerHTML = `Pay $${TOTAL_AMOUNT.toFixed(2)}`;
   }
 });
+
+// Start the page logic
+initCheckout();
