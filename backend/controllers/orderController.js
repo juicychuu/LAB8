@@ -56,18 +56,39 @@ exports.checkout = async (req, res) => {
 
 exports.getMyOrders = async (req, res) => {
   try {
-    return res.json(await Order.getOrdersByUser(req.user.id));
+    const page = parseInt(req.query.page) || 1;
+    const limit = 15;
+    const offset = (page - 1) * limit;
+
+    const { orders, total } = await Order.getOrdersByUserPaginated(req.user.id, limit, offset);
+    
+    return res.json({
+      orders,
+      totalItems: total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
   } catch (err) {
     return res.status(500).json({ error: 'Internal server error.' });
   }
 };
-
-exports.getAllOrders = async (_req, res) => {
+exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.getAllOrders();
-    return res.json(orders);
-  } catch (err) {
+    // Get the page from the URL (?page=1), default to 1
+    const page = parseInt(req.query.page) || 1;
+    const limit = 15; 
+    const offset = (page - 1) * limit;
+
+    // Call the new paginated method
+    const { orders, total } = await Order.getAllOrdersPaginated(limit, offset);
     
+    return res.json({
+      orders,
+      totalItems: total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page
+    });
+  } catch (err) {
     console.error('Admin Orders Error:', err); 
     return res.status(500).json({ error: 'Internal server error.' });
   }

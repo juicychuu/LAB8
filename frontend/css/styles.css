@@ -868,3 +868,202 @@ nav {
 .review-submit-btn:hover {
     background: #ddd;
 }
+
+
+/* ── Admin Dashboard Upgrades ────────────────────────── */
+
+/* Modal Overlay Base */
+.modal-overlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Darker backdrop for focus */
+  backdrop-filter: blur(4px); /* Modern blur effect */
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Show the modal when .active is added via JS */
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+/* Role Modal Specific adjustments */
+#role-modal .modal {
+  border-top: 4px solid var(--primary); /* A nice accent line */
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.btn-pagination {
+  padding: 8px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-pagination:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.btn-pagination:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ── Admin Delete Modal Styling ────────────────────── */
+
+/* Danger-specific modal accent */
+#delete-modal .modal {
+  border-top: 4px solid #e74c3c; /* Red accent for danger */
+  animation: modalShake 0.4s ease-in-out; /* Subtle shake on open */
+}
+
+/* Red button for the permanent delete action */
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
+
+/* ── Animation for Deletion Warning ────────────────── */
+@keyframes modalShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+/* ── Status Badges (If not already in your CSS) ─────── */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-processing { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+.status-delivered { background: rgba(46, 204, 113, 0.1); color: #2ecc71; }
+.status-cancelled { background: rgba(231, 76, 60, 0.1); color: #e74c3c; }
+
+/* ── Toast Notifications (Optional for later) ──────── */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3000;
+}
+
+.toast {
+  background: var(--card-bg);
+  color: var(--text-main);
+  padding: 12px 24px;
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-top: 10px;
+  border-radius: 4px;
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+
+/* Updated Dark-Theme Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    /* Increase background opacity slightly to darken the page behind the modal */
+    background: rgba(0, 0, 0, 0.7); 
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: 0.3s ease;
+    z-index: 2000;
+}
+
+.modal-overlay.active {
+    opacity: 1; visibility: visible;
+}
+
+/* 🎨 THE MAGIC HAPPENS HERE: Updated Dark Content */
+.modal-content {
+    /* 🔴 CHANGE: Switch to a dark background (e.g., #222 or var(--background)) */
+    background: var(--card-background, #1a1a1a); 
+    padding: 2rem; border-radius: 12px; width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4); /* Darker shadow */
+    border: 1px solid var(--border); /* Optional subtle border for definition */
+}
+
+/* Ensure ALL texts inside use the primary light-gray/white color */
+.modal-content, .modal-content h3, .modal-header h3, .form-label {
+    color: var(--text-primary, #eaeaea) !important;
+}
+
+.modal-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
+}
+
+/* Update the form-label separately to ensure visibility */
+.modal-content .form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted, #a0a0a0); /* Slightly muted light-gray for labels */
+}
+
+/* Ensure inputs are visible and consistent with your style */
+.modal-content .form-input {
+    background: #000; /* As seen in your image */
+    color: white;
+    border: 1px solid var(--border, #333);
+}
+
+.modal-content .form-input:focus {
+    border-color: var(--primary); 
+}
+
+.btn-close {
+    background: none; border: none; font-size: 1.8rem; cursor: pointer; 
+    color: var(--text-muted); 
+}
+
+.btn-close:hover {
+    color: white; 
+}

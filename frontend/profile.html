@@ -3,36 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Essential Hub</title>
+    <title>Essential Hub - Profile</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <nav>
-    <a class="nav-brand" href="index.html">ESSENTIALS<span style="color:var(--text-muted)">HUB</span></a>
-    
-    <div class="nav-links">
-        <a href="index.html">Store</a>
-        <a href="cart.html">Cart <span class="cart-badge" id="nav-cart-count">0</span></a>
-        <a href="profile.html" class="active">Profile</a>
-        
-        <a href="#" id="nav-logout">Logout</a>
-
-        <div id="nav-admin-wrap" style="display:none;"><a href="admin.html">Admin</a></div>
-    </div>
-</nav>
+        <a class="nav-brand" href="index.html">ESSENTIALS<span style="color:var(--text-muted)">HUB</span></a>
+        <div class="nav-links">
+            <a href="index.html">Store</a>
+            <a href="cart.html">Cart <span class="cart-badge" id="nav-cart-count">0</span></a>
+            <a href="profile.html" class="active">Profile</a>
+            <a href="#" id="nav-logout">Logout</a>
+            <div id="nav-admin-wrap" style="display:none;"><a href="admin.html">Admin</a></div>
+        </div>
+    </nav>
 
     <div class="container">
         <h1 class="page-title">Account Settings</h1>
 
         <div class="checkout-layout" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
-            
             <div class="card">
                 <h3 style="margin-bottom: 1.5rem;">User Information</h3>
-                
                 <div class="profile-avatar-section">
                     <div class="avatar-wrapper">
                         <img src="https://ui-avatars.com/api/?name=User&background=333&color=fff" id="profile-img-preview" class="profile-avatar" alt="Avatar">
-                        
                         <label for="avatar-input" class="avatar-edit-label">
                             📷
                             <input type="file" id="avatar-input" hidden accept="image/*">
@@ -57,14 +51,35 @@
                     <span>Total Orders</span>
                     <span id="total-orders-count" style="font-weight: bold;">0</span>
                 </div>
-                <div class="order-summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <div class="order-summary-row" style="display: flex; justify-content: space-between; margin-bottom: 1.5rem;">
                     <span>Account Status</span>
                     <span style="color: var(--success); font-weight: bold;">Active</span>
                 </div>
-                <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
-                <p style="font-size: 0.85rem; color: var(--text-muted);">
-                    Need to change your password? Contact support or wait for our next security update!
-                </p>
+                
+                <div style="display: flex; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 1rem;">
+                    <button id="open-password-modal" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Change Password</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="password-modal" class="modal-overlay">
+            <div class="modal-content" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h3>Update Password</h3>
+                    <button id="close-password-modal" class="btn-close">&times;</button>
+                </div>
+                <form id="change-password-form">
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" id="current-password" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" id="new-password" class="form-input" required>
+                    </div>
+                    <p id="password-message" style="margin-bottom: 1rem; font-size: 0.85rem; display: none;"></p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Save Changes</button>
+                </form>
             </div>
         </div>
 
@@ -85,7 +100,9 @@
                 <p>You haven't placed any orders yet.</p>
             </div>
         </div>
-    </div>
+
+        <div id="user-orders-pagination" class="pagination-controls" style="margin-top: 1rem; display: flex; justify-content: center; align-items: center; gap: 1rem;"></div>
+    </div> 
 
     <script src="js/api.js"></script>
     <script src="js/pages/profile.js"></script>
